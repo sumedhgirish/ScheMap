@@ -1,0 +1,117 @@
+.dbnavbar {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  padding: 15px 1em 5px 1em;
+  margin: 0.5em;
+  margin-bottom: 0.2em;
+  position: sticky;
+  top: 0;
+  background-color: var(--rpbase);
+  z-index: 1;
+}
+
+.brand {
+  display: flex;
+  flex-direction: row;
+}
+
+.links {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-left: auto;
+  align-content: center;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  margin: 0px 0.25em 0px 0.25em;
+  align-self: center;
+}
+
+.title {
+  width: auto;
+  height: 50px;
+  margin: 0px 0.25em 0px 0.25em;
+  font-weight: bold;
+  align-content: center;
+}
+
+.redirect_link {
+  width: auto;
+  height: 50px;
+  margin: 0px 0.25em 0px 0.25em;
+  align-content: center;
+}
+
+.hero {
+  width: 95vw;
+  height: 85vh;
+  margin: 0px;
+  padding: 0.5em 2vw 1em 2vw;
+}
+
+.heroImage {
+  background-image: url("assets/hero.svg");
+  background-color: var(--rpbase);
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  border-radius: 1em;
+  background-position: center;
+  background-repeat: repeat;
+  background-size: auto;
+  position: relative;
+}
+
+.heroText {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.herocont {
+  font-size: 5rem;
+  color: var(--rpfoam);
+}
+
+.herodesc {
+  font-size: 1.5rem;
+  color: var(--rptext);
+}
+
+.features {
+  width: 100vw;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  column-gap: 0.7em;
+  align-items: center;
+  margin-top: 2em;
+  margin-bottom: 4em;
+  flex-wrap: nowrap;
+}
+
+.featureCard {
+  width: 30ch;
+  height: 40ch;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  background-color: rgb(from var(--rpoverlay) r g b / 70%);
+  padding: 1em;
+  border-radius: 1em;
+  text-align: center;
+}
+
+.featuretitle {
+  font-size: 2em;
+  opacity: 1;
+  color: var(--rprose);
+}
