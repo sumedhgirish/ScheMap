@@ -43,6 +43,17 @@
   height: 50px;
   margin: 0px 0.25em 0px 0.25em;
   align-content: center;
+  color: var(--rptext);
+  text-decoration: none;
+}
+
+.redirect_link:visited {
+  color: var(--rptext);
+}
+
+.redirect_link:hover {
+  color: var(--rppine);
+  text-decoration: underline;
 }
 
 .hero {

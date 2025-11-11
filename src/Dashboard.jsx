@@ -12,9 +12,6 @@ function NavBar() {
         <NavLink to="/about" className="redirect_link">
           About
         </NavLink>
-        <NavLink to="/profile" className="redirect_link">
-          Profile
-        </NavLink>
         <NavLink to="/projects" className="redirect_link">
           Projects
         </NavLink>
