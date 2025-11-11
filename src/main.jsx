@@ -1,11 +1,17 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router";
 import "./index.css";
-// import Dashboard from "./Dashboard.jsx";
+import Dashboard from "./Dashboard.jsx";
 import Projects from "./Projects.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Projects />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/projects" element={<Projects />} />
+      </Routes>
+    </BrowserRouter>
   </StrictMode>,
 );

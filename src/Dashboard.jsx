@@ -1,4 +1,5 @@
 import "./Dashboard.css";
+import { NavLink } from "react-router";
 
 function NavBar() {
   return (
@@ -8,9 +9,15 @@ function NavBar() {
         <p className="title">Home</p>
       </span>
       <span className="links">
-        <a className="redirect_link">About</a>
-        <a className="redirect_link">Profile</a>
-        <a className="redirect_link">Projects</a>
+        <NavLink to="/about" className="redirect_link">
+          About
+        </NavLink>
+        <NavLink to="/profile" className="redirect_link">
+          Profile
+        </NavLink>
+        <NavLink to="/projects" className="redirect_link">
+          Projects
+        </NavLink>
       </span>
     </div>
   );
