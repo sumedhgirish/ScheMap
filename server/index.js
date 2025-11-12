@@ -32,6 +32,7 @@ const userSchema = new Schema(
     password: String,
   },
   {
+    toJSON: { virtuals: true },
     virtuals: {
       fullname: {
         get() {
@@ -56,7 +57,7 @@ app.post("/api/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const auth_token = jwt.sign({ username: username }, JWT_SECRET, {
+    const auth_token = jwt.sign({ id: user._id }, JWT_SECRET, {
       expiresIn: "2h",
     });
     return res.json({ auth_token });
@@ -88,6 +89,22 @@ app.post("/api/register", async (req, res) => {
     });
     console.log(newUser);
     return res.status(201).json({ message: "User registered successfully" });
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+});
+
+app.post("/api/projects", async (req, res) => {
+  try {
+    console.log(req.body);
+    const { auth_token } = req.body;
+    const { id } = jwt.verify(auth_token, JWT_SECRET);
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: "User does not exist" });
+    }
+    const projects = await Project.find({ _id: { $in: user.project_ids } });
+    return res.status(201).json({ user: user, projects: projects });
   } catch (err) {
     return res.status(500).json({ error: err });
   }

@@ -16,14 +16,25 @@
   background-color: rgb(from var(--rpoverlay) r g b / 70%);
   border-radius: 1em;
   flex-grow: 0;
+  text-align: left;
 }
 
 .welcome {
   font-size: 2em;
   color: var(--rpiris);
+  margin-bottom: 0em;
 }
 
 .username {
+  color: var(--rppine);
+}
+
+.info {
+  font-size: 1em;
+  margin-left: 0.5em;
+}
+
+.numProj {
   color: var(--rppine);
 }
 

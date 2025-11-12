@@ -1,6 +1,7 @@
 import { Navigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
 import "./Projects.css";
+import { useEffect, useState } from "react";
 
 function Settings({ project }) {
   return (
@@ -17,6 +18,10 @@ function Greeter({ user }) {
       <h2 className="welcome">
         Welcome, <span className="username">{user.fullname}</span>
       </h2>
+      <p className="info">
+        You have <span className="numProj">{user.project_ids.length}</span>{" "}
+        active projects.
+      </p>
     </div>
   );
 }
@@ -30,9 +35,30 @@ function ProjectList() {
 }
 
 function Projects() {
-  const auth_token = localStorage.getItem("auth_token");
-  if (!auth_token) return <Navigate to="/login" replace />;
+  const [user, setUser] = useState(null);
+  const [projects, setProjects] = useState([]);
 
+  const auth_token = localStorage.getItem("auth_token");
+  useEffect(() => {
+    if (!auth_token) return;
+    const loadUser = async () => {
+      await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ auth_token }),
+      })
+        .then(async (resp) => {
+          const data = await resp.json();
+          setUser(data.user);
+          console.log(data);
+          setProjects(data.projects);
+        })
+        .catch((err) => console.log(err));
+    };
+    loadUser();
+  }, [auth_token]);
+
+  if (!auth_token) return <Navigate to="/login" replace />;
   try {
     const { exp } = jwtDecode(auth_token);
     if (exp * 1000 < Date.now()) {
@@ -43,32 +69,14 @@ function Projects() {
     return <Navigate to="/login" replace />;
   }
 
-  const default_user = {
-    name: {
-      first: "Sumedh",
-      last: "Girish",
-    },
-    username: "crownedhog",
-    projects: [],
-    password: "password1",
-  };
-  const default_project = {
-    title: "ScheMap",
-    desc: "A schematic visualizer for project management.",
-    todo: {
-      completed: [],
-      pending: [],
-      ignored: [],
-    },
-    chat: [],
-    posts: [],
-  };
+  if (!user) return <div>Loading...</div>;
+  console.log(user, projects);
 
   return (
     <>
       <div className="infocard">
-        <Greeter user={default_user} />
-        <Settings project={default_project} />
+        <Greeter user={user} />
+        <Settings project={projects} />
       </div>
       <SearchBar />
       <ProjectList />
