@@ -1,10 +1,12 @@
 import express from "express";
+import jwt from "jsonwebtoken";
 import { mongoose, Schema } from "mongoose";
 
-// Set up database
-const database_url = "mongodb://localhost:27017";
-const database_name = "/schemap_db";
-const db = await mongoose.createConnection(database_url + database_name);
+const MONGO_URL = "mongodb://localhost:27017/schemap_db";
+const PORT = 5000;
+const JWT_SECRET = "this_is_a_secret_key";
+
+const db = await mongoose.createConnection(MONGO_URL);
 
 const projectSchema = new Schema({
   title: String,
@@ -17,11 +19,6 @@ const projectSchema = new Schema({
   chat: Array,
   posts: Array,
 });
-const Project = db.model("Project", projectSchema);
-let p1 = new Project({
-  title: "Test Project",
-});
-console.log(await Project.find());
 
 const userSchema = new Schema(
   {
@@ -30,6 +27,7 @@ const userSchema = new Schema(
       last: String,
     },
     project_ids: Array,
+    username: String,
     password: String,
   },
   {
@@ -39,17 +37,28 @@ const userSchema = new Schema(
           return this.name.first + " " + this.name.last;
         },
       },
-      projects: {
-        get() {},
-      },
     },
   },
 );
+
+const Project = db.model("Project", projectSchema);
 const User = db.model("User", userSchema);
-let me = new User({
-  name: { first: "Sumedh", last: "Girish" },
-  password: "password1",
+
+const app = express();
+app.use(express.json());
+
+app.post("/api/login", async (req, res) => {
+  console.log(req.body);
+  try {
+    const { username, password } = req.body;
+    console.log(username, password);
+    const auth_token = jwt.sign({ username: username }, JWT_SECRET, {
+      expiresIn: "2h",
+    });
+    return res.json({ auth_token });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 });
 
-me.project_ids.push(p1._id);
-console.log(await User.deleteOne());
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));

@@ -26,13 +26,17 @@
   grid-template-columns: 1fr 1fr;
 }
 
+.grid-col-span-2 {
+  grid-column: span 2;
+}
+
 .inputLabel {
   font-size: 1.2em;
+  margin: 0px;
   color: var(--rptext);
 }
 
 .inputBox {
-  grid-column: span 2;
   width: 100%;
   border: none;
   border-bottom: 3px solid var(--rpmuted);

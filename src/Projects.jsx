@@ -1,3 +1,5 @@
+import { Navigate } from "react-router";
+import { jwtDecode } from "jwt-decode";
 import "./Projects.css";
 
 function Settings({ project }) {
@@ -28,16 +30,38 @@ function ProjectList() {
 }
 
 function Projects() {
-  // Check if valid user is logged in
-  // if yes: retrieve user projects and continue
-  // else: redirect to login page
+  const auth_token = localStorage.getItem("auth_token");
+  if (!auth_token) return <Navigate to="/login" replace />;
+
+  try {
+    const { exp } = jwtDecode(auth_token);
+    if (exp * 1000 < Date.now()) {
+      localStorage.removeItem("auth_token");
+      return <Navigate to="/login" replace />;
+    }
+  } catch {
+    return <Navigate to="/login" replace />;
+  }
 
   const default_user = {
-    fullname: "Sumedh Girish",
+    name: {
+      first: "Sumedh",
+      last: "Girish",
+    },
+    username: "crownedhog",
+    projects: [],
+    password: "password1",
   };
   const default_project = {
     title: "ScheMap",
     desc: "A schematic visualizer for project management.",
+    todo: {
+      completed: [],
+      pending: [],
+      ignored: [],
+    },
+    chat: [],
+    posts: [],
   };
 
   return (
