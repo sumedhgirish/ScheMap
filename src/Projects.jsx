@@ -28,6 +28,10 @@ function ProjectList() {
 }
 
 function Projects() {
+  // Check if valid user is logged in
+  // if yes: retrieve user projects and continue
+  // else: redirect to login page
+
   const default_user = {
     fullname: "Sumedh Girish",
   };

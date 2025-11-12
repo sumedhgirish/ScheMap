@@ -26,7 +26,7 @@ function Hero() {
       <div className="heroImage">
         <div className="heroText">
           <h1 className="herocont">Sche-Map</h1>
-          <p className="herodesc">Schedule. Map. Repeat.</p>
+          <p className="herodesc">Schedule. Map. Execute. Repeat.</p>
         </div>
       </div>
     </div>
