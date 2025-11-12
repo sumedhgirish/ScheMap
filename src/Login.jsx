@@ -9,8 +9,10 @@ async function AuthUser(formdata, navigate) {
       body: JSON.stringify(Object.fromEntries(formdata)),
     });
     const data = await result.json();
-    localStorage.setItem("auth_token", data.auth_token);
-    navigate("/projects");
+    if (data.auth_token) {
+      localStorage.setItem("auth_token", data.auth_token);
+      navigate("/projects");
+    }
   } catch (err) {
     console.log(err);
   }

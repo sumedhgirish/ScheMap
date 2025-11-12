@@ -1,5 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import { mongoose, Schema } from "mongoose";
 
 const MONGO_URL = "mongodb://localhost:27017/schemap_db";
@@ -48,16 +49,47 @@ const app = express();
 app.use(express.json());
 
 app.post("/api/login", async (req, res) => {
-  console.log(req.body);
   try {
     const { username, password } = req.body;
-    console.log(username, password);
+    const user = await User.findOne({ username: username });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
     const auth_token = jwt.sign({ username: username }, JWT_SECRET, {
       expiresIn: "2h",
     });
     return res.json({ auth_token });
   } catch (err) {
     return res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/api/register", async (req, res) => {
+  try {
+    const { first, last, username, password } = req.body;
+    console.log(req.body);
+    if (!first || !username || !password) {
+      return res.status(401).json({ error: "Required parameters missing" });
+    }
+
+    const exists = await User.findOne({ username: username });
+    console.log(exists);
+    if (exists) {
+      return res.status(409).json({ error: "Username already exists" });
+    }
+
+    const hashedPass = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      username: username,
+      password: hashedPass,
+      name: { first: first, last: last },
+      project_ids: [],
+    });
+    console.log(newUser);
+    return res.status(201).json({ message: "User registered successfully" });
+  } catch (err) {
+    return res.status(500).json({ error: err });
   }
 });
 

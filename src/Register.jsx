@@ -1,11 +1,28 @@
+import { useNavigate } from "react-router";
 import "./Register.css";
 
+async function register(formdata, navigate) {
+  try {
+    const result = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(Object.fromEntries(formdata)),
+    });
+    const data = await result.json();
+    console.log(data);
+    navigate("/login");
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 function Register() {
+  const navigate = useNavigate();
   return (
     <div className="registerCard">
       <h2 className="registerTitle">Create Account</h2>
       <form
-        action={() => console.log("sample action")}
+        action={(formdata) => register(formdata, navigate)}
         className="registerForm"
       >
         <div>
