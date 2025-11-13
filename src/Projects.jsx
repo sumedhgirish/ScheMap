@@ -8,6 +8,15 @@ function Settings({ project }) {
     <div className="settings">
       <h2 className="project_title">{project.title}</h2>
       <p className="project_desc">{project.desc}</p>
+      <div className="stats">
+        <p className="todo_desc">
+          {project.todo.pending.length} of{" "}
+          {project.todo.pending.length + project.todo.completed.length} Pending
+          Tasks
+        </p>
+        <p classname="chat_desc">{project.chat.length} Messages</p>
+        <p classname="posts">{project.posts.length} Posts</p>
+      </div>
     </div>
   );
 }
@@ -149,6 +158,8 @@ function Projects() {
     loadUser();
   }, [auth_token]);
 
+  const [curr, setCurr] = useState(null);
+
   if (!auth_token) return <Navigate to="/login" replace />;
   try {
     const { exp } = jwtDecode(auth_token);
@@ -163,11 +174,15 @@ function Projects() {
   if (!user) return <div>Loading...</div>;
   console.log(user, projects);
 
+  if (!curr && projects.length > 0) {
+    setCurr(projects[0]);
+  }
+
   return (
     <>
       <div className="infocard">
         <Greeter user={user} />
-        <Settings project={projects} />
+        <Settings project={curr} />
       </div>
       <SearchBar />
       <ProjectList projects={projects} />

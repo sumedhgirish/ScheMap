@@ -8,6 +8,13 @@
   flex-direction: row;
 }
 
+.stats {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
 .greeter {
   height: 15ch;
   width: 50ch;
@@ -50,11 +57,13 @@
 
 .project_title {
   font-size: 2em;
+  margin-top: 0;
   margin-bottom: 0.5em;
   color: var(--rpiris);
 }
 
 .project_desc {
+  margin-top: 0.5em;
   font-weight: italic;
   margin-top: 0;
   color: rgb(from var(--rptext) r g b / 70%);
@@ -77,7 +86,7 @@
   padding: 0.5em;
   background-color: rgb(from var(--rpoverlay) r g b / 70%);
   border-radius: 1em;
-  overflow: scroll;
+  overflow: auto;
   display: flex;
   flex-direction: column;
 }
