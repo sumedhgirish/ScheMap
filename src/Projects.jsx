@@ -1,7 +1,7 @@
 import { Navigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
-import "./Projects.css";
 import { useEffect, useState } from "react";
+import "./Projects.css";
 
 function Settings({ project }) {
   return (
@@ -27,11 +27,102 @@ function Greeter({ user }) {
 }
 
 function SearchBar() {
-  return <div className="search"></div>;
+  async function CreateProject(formdata) {
+    try {
+      const data = formdata;
+      const auth_token = localStorage.getItem("auth_token");
+      data.append("auth_token", auth_token);
+      console.log(JSON.stringify(Object.fromEntries(data)));
+      const result = await fetch("/api/new_project", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(data)),
+      });
+      console.log(result);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function JoinProject(formdata) {
+    try {
+      const data = formdata;
+      const auth_token = localStorage.getItem("auth_token");
+      data.append("auth_token", auth_token);
+      console.log(JSON.stringify(Object.fromEntries(data)));
+      const result = await fetch("/api/join_project", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(data)),
+      });
+      console.log(result);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  return (
+    <div className="search">
+      <form className="pformBox" action={CreateProject}>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          className="pinputBox"
+          placeholder="Title"
+        />
+        <input
+          type="text"
+          id="desc"
+          name="desc"
+          className="pinputBox"
+          placeholder="Description"
+        />
+        <input
+          type="submit"
+          id="new_project"
+          className="pformButton"
+          value="Add Project"
+        />
+      </form>
+      <p>or</p>
+      <form className="pformBox" action={JoinProject}>
+        <input
+          type="text"
+          id="title"
+          name="project_id"
+          className="pinputBox"
+          placeholder="Project ID"
+          required
+        />
+        <input
+          type="submit"
+          id="join_project"
+          className="pformButton"
+          value="Join"
+          required
+        />
+      </form>
+    </div>
+  );
 }
 
-function ProjectList() {
-  return <div className="projectlist"></div>;
+function ProjectElement({ title, _id, desc }) {
+  console.log("inside single renderer");
+  return (
+    <div className="projectElement">
+      <h4 className="projectTitle">{title}</h4>
+      <p className="projectDesc">{desc}</p>
+      <p className="projectId">{_id}</p>
+    </div>
+  );
+}
+
+function ProjectList({ projects }) {
+  console.log(projects);
+  return (
+    <div className="projectlist">{projects.map(ProjectElement, projects)}</div>
+  );
 }
 
 function Projects() {
@@ -79,7 +170,7 @@ function Projects() {
         <Settings project={projects} />
       </div>
       <SearchBar />
-      <ProjectList />
+      <ProjectList projects={projects} />
     </>
   );
 }

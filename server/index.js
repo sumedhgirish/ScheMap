@@ -96,15 +96,70 @@ app.post("/api/register", async (req, res) => {
 
 app.post("/api/projects", async (req, res) => {
   try {
-    console.log(req.body);
     const { auth_token } = req.body;
     const { id } = jwt.verify(auth_token, JWT_SECRET);
     const user = await User.findById(id);
+    console.log(user);
     if (!user) {
       return res.status(404).json({ error: "User does not exist" });
     }
     const projects = await Project.find({ _id: { $in: user.project_ids } });
     return res.status(201).json({ user: user, projects: projects });
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+});
+
+app.post("/api/new_project", async (req, res) => {
+  try {
+    console.log(req.body);
+    const { title, desc, auth_token } = req.body;
+    const { id } = jwt.verify(auth_token, JWT_SECRET);
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: "User does not exist" });
+    }
+    console.log("Creating new project");
+    const new_project = await Project.create({
+      title: title,
+      desc: desc,
+      todo: {
+        completed: [],
+        pending: [],
+        ignored: [],
+      },
+      chats: [],
+      posts: [],
+    });
+    user.project_ids.push(new_project._id);
+    await user.save();
+    console.log(user);
+    return res.status(201).json({ message: "Project created successfully." });
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+});
+
+app.post("/api/join_project", async (req, res) => {
+  try {
+    console.log(req.body);
+    const { project_id, auth_token } = req.body;
+    const { id } = jwt.verify(auth_token, JWT_SECRET);
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: "User does not exist" });
+    }
+    const project = Project.findById(project_id);
+    if (!project) {
+      return res
+        .status(404)
+        .json({ error: "project with given id does not exist" });
+    }
+    if (!user.project_ids.includes(project_id)) {
+      user.project_ids.push(project_id);
+      user.save();
+    }
+    return res.status(201).json({ message: "Added project to user list" });
   } catch (err) {
     return res.status(500).json({ error: err });
   }
