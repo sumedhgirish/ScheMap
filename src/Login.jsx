@@ -1,22 +1,6 @@
 import { NavLink, useNavigate } from "react-router";
 import "./Login.css";
-
-async function AuthUser(formdata, navigate) {
-  try {
-    const result = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(formdata)),
-    });
-    const data = await result.json();
-    if (data.auth_token) {
-      localStorage.setItem("auth_token", data.auth_token);
-      navigate("/projects");
-    }
-  } catch (err) {
-    console.log(err);
-  }
-}
+import api from "./api/axios.jsx";
 
 function Login() {
   const navigate = useNavigate();
@@ -24,7 +8,16 @@ function Login() {
     <div className="loginCard">
       <h2 className="loginTitle">Welcome back!</h2>
       <form
-        action={(formdata) => AuthUser(formdata, navigate)}
+        action={async (formdata) => {
+          api
+            .post("/auth/login", formdata)
+            .then(() => {
+              navigate("/projects");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }}
         className="loginForm"
       >
         <div className="grid-col-span-2">

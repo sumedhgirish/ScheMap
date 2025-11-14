@@ -1,20 +1,6 @@
 import { useNavigate } from "react-router";
 import "./Register.css";
-
-async function register(formdata, navigate) {
-  try {
-    const result = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(formdata)),
-    });
-    const data = await result.json();
-    console.log(data);
-    navigate("/login");
-  } catch (err) {
-    console.log(err);
-  }
-}
+import api from "./api/axios.jsx";
 
 function Register() {
   const navigate = useNavigate();
@@ -22,7 +8,12 @@ function Register() {
     <div className="registerCard">
       <h2 className="registerTitle">Create Account</h2>
       <form
-        action={(formdata) => register(formdata, navigate)}
+        action={(formdata) => {
+          api
+            .post("/auth/register", formdata)
+            .then(() => navigate("/login"))
+            .catch((err) => console.log(err));
+        }}
         className="registerForm"
       >
         <div>

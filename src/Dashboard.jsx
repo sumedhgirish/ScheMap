@@ -5,7 +5,7 @@ function NavBar() {
   return (
     <div className="dbnavbar">
       <span className="brand">
-        <img src="src/assets/logo.png" className="logo" alt="Logo" />
+        <img src="src/assets/brand/logo.png" className="logo" alt="Logo" />
         <p className="title">Home</p>
       </span>
       <span className="links">
@@ -48,9 +48,18 @@ function Dashboard() {
       <NavBar />
       <Hero />
       <div className="features">
-        <FeatureCard title="Multi-User Collaboration" content="Multiple users can edit the same website stored in a shared database.Updates made by one user become visible to others after the page reloads. Reloading ensures everyone sees the latest, conflict-free version of the project." />
-        <FeatureCard title="Shared Project Access" content="Teammates can join a project using a unique project link or project ID. Several users can open and work on the same project from different devices. Only authorized users can view or edit the project, ensuring secure collaboration." />
-        <FeatureCard title="Project Stored in Database" content="The project’s data is saved in a central database, and every change is stored permanently. When the page reloads, the website is rebuilt from this data, ensuring all users see the latest version." />
+        <FeatureCard
+          title="Multi-User Collaboration"
+          content="Multiple users can edit the same website stored in a shared database.Updates made by one user become visible to others after the page reloads. Reloading ensures everyone sees the latest, conflict-free version of the project."
+        />
+        <FeatureCard
+          title="Shared Project Access"
+          content="Teammates can join a project using a unique project link or project ID. Several users can open and work on the same project from different devices. Only authorized users can view or edit the project, ensuring secure collaboration."
+        />
+        <FeatureCard
+          title="Project Stored in Database"
+          content="The project’s data is saved in a central database, and every change is stored permanently. When the page reloads, the website is rebuilt from this data, ensuring all users see the latest version."
+        />
       </div>
     </>
   );

@@ -64,7 +64,7 @@
 }
 
 .heroImage {
-  background-image: url("assets/hero.svg");
+  background-image: url("assets/backgrounds/hero.svg");
   background-color: var(--rpbase);
   margin: 0px;
   width: 100%;

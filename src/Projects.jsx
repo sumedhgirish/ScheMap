@@ -1,9 +1,45 @@
 import { Navigate } from "react-router";
-import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
+import api from "./api/axios";
 import "./Projects.css";
 
+function Options({ tabs }) {
+  const [selectedTab, selectTab] = useState(tabs[0]);
+  function OptionElement(tab) {
+    return <h3>{tab.title}</h3>;
+  }
+  return (
+    <div className="tabbox">
+      <div className="tabs">{tabs.map(OptionElement)}</div>
+      <div className="tabcontext">{selectedTab.component}</div>
+    </div>
+  );
+}
+
+function Greeter({ user, projects }) {
+  const defaultTabs = [
+    {
+      title: "Details",
+      component: (
+        <p className="info">
+          You have <span className="numProj">{projects.length}</span> active
+          projects.
+        </p>
+      ),
+    },
+  ];
+  return (
+    <div className="greeter">
+      <h2 className="welcome">
+        Welcome, <span className="username">{user.fullname}</span>
+      </h2>
+      <Options tabs={defaultTabs} />
+    </div>
+  );
+}
+
 function Settings({ project }) {
+  if (!project) return <div className="settings"></div>;
   return (
     <div className="settings">
       <h2 className="project_title">{project.title}</h2>
@@ -21,58 +57,11 @@ function Settings({ project }) {
   );
 }
 
-function Greeter({ user }) {
-  return (
-    <div className="greeter">
-      <h2 className="welcome">
-        Welcome, <span className="username">{user.fullname}</span>
-      </h2>
-      <p className="info">
-        You have <span className="numProj">{user.project_ids.length}</span>{" "}
-        active projects.
-      </p>
-    </div>
-  );
-}
-
 function SearchBar() {
-  async function CreateProject(formdata) {
-    try {
-      const data = formdata;
-      const auth_token = localStorage.getItem("auth_token");
-      data.append("auth_token", auth_token);
-      console.log(JSON.stringify(Object.fromEntries(data)));
-      const result = await fetch("/api/new_project", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Object.fromEntries(data)),
-      });
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function JoinProject(formdata) {
-    try {
-      const data = formdata;
-      const auth_token = localStorage.getItem("auth_token");
-      data.append("auth_token", auth_token);
-      console.log(JSON.stringify(Object.fromEntries(data)));
-      const result = await fetch("/api/join_project", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Object.fromEntries(data)),
-      });
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
+  const dummy = () => console.log("dummy");
   return (
     <div className="search">
-      <form className="pformBox" action={CreateProject}>
+      <form className="searchbox" action={dummy}>
         <input
           type="text"
           id="title"
@@ -81,35 +70,10 @@ function SearchBar() {
           placeholder="Title"
         />
         <input
-          type="text"
-          id="desc"
-          name="desc"
-          className="pinputBox"
-          placeholder="Description"
-        />
-        <input
           type="submit"
-          id="new_project"
+          id="search_value"
           className="pformButton"
-          value="Add Project"
-        />
-      </form>
-      <p>or</p>
-      <form className="pformBox" action={JoinProject}>
-        <input
-          type="text"
-          id="title"
-          name="project_id"
-          className="pinputBox"
-          placeholder="Project ID"
-          required
-        />
-        <input
-          type="submit"
-          id="join_project"
-          className="pformButton"
-          value="Join"
-          required
+          value="search"
         />
       </form>
     </div>
@@ -137,55 +101,29 @@ function ProjectList({ projects }) {
 function Projects() {
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState([]);
-
-  const auth_token = localStorage.getItem("auth_token");
   useEffect(() => {
-    if (!auth_token) return;
-    const loadUser = async () => {
-      await fetch("/api/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ auth_token }),
-      })
-        .then(async (resp) => {
-          const data = await resp.json();
-          setUser(data.user);
-          console.log(data);
-          setProjects(data.projects);
-        })
-        .catch((err) => console.log(err));
+    const fetchData = async () => {
+      let result = await api.post("projects/list");
+      setProjects(result.data.projects);
+      result = await api.post("users/current");
+      setUser(result.data.user);
     };
-    loadUser();
-  }, [auth_token]);
+    fetchData();
+  }, []);
 
-  const [curr, setCurr] = useState(null);
-
-  if (!auth_token) return <Navigate to="/login" replace />;
-  try {
-    const { exp } = jwtDecode(auth_token);
-    if (exp * 1000 < Date.now()) {
-      localStorage.removeItem("auth_token");
-      return <Navigate to="/login" replace />;
-    }
-  } catch {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (!user) return <div>Loading...</div>;
-  console.log(user, projects);
-
-  if (!curr && projects.length > 0) {
-    setCurr(projects[0]);
+  // Make this better later
+  if (!user) {
+    return <p>Loading...</p>;
   }
 
   return (
     <>
       <div className="infocard">
-        <Greeter user={user} />
-        <Settings project={curr} />
+        <Greeter user={user} projects={projects} />
+        <Settings />
+        <SearchBar />
+        <ProjectList projects={projects} />
       </div>
-      <SearchBar />
-      <ProjectList projects={projects} />
     </>
   );
 }
