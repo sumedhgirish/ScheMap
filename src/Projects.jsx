@@ -208,12 +208,14 @@ function Projects() {
   useEffect(() => {
     const fetchData = async () => {
       let result;
-      try {
-        result = await api.post("users/current");
-        setUser(result.data.user);
-      } catch (err) {
-        console.log(err);
-        navigate("/login");
+      if (!user) {
+        try {
+          result = await api.post("users/current");
+          setUser(result.data.user);
+        } catch (err) {
+          console.log(err);
+          navigate("/login");
+        }
       }
       result = await api.post("projects/list");
       setProjects(result.data.projects);
