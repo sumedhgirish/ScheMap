@@ -1,6 +1,7 @@
 .dbnavbar {
   display: flex;
   flex-direction: row;
+  align-items: center;
   height: 50px;
   padding: 15px 1em 5px 1em;
   margin: 0.5em;
@@ -57,10 +58,11 @@
 }
 
 .hero {
-  width: 95vw;
-  height: 85vh;
+  width: 100vw;
+  height: 90vh;
   margin: 0px;
   padding: 0.5em 2vw 1em 2vw;
+  align-self: center;
 }
 
 .heroImage {

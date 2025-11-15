@@ -13,6 +13,8 @@
   border-color: transparent;
   overflow: hidden;
   padding: 0.2em;
+  width: 100%;
+  height: 100%;
 }
 
 .options {
@@ -94,6 +96,44 @@
   background-color: rgb(from var(--rpoverlay) r g b / 70%);
   border-radius: 1em;
   text-align: left;
+  padding: 1em;
+}
+
+.infoHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  justify-content: flex-start;
+  .infoTitle {
+    color: var(--rpfoam);
+    margin: 0;
+    padding: 0;
+  }
+  .infoDesc {
+    margin-bottom: 1%;
+    margin-left: 2%;
+    color: var(--rpmuted);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.projectOptions {
+  margin-top: 0.5em;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 7fr;
+}
+
+.newprojectOptions {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 1.5em;
+  margin-top: 0.5em;
+  align-items: end;
+  margin-top: 1em;
 }
 
 .search {
@@ -129,7 +169,6 @@
   background: transparent;
   color: var(--rptext);
   font-size: 1em;
-  margin-left: 1em;
 }
 
 .pinputBox:focus {

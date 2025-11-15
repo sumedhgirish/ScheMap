@@ -9,6 +9,7 @@ const auth_router = Router();
 
 auth_router.post("/login", ResponseGenerator(Login));
 auth_router.post("/register", ResponseGenerator(Register));
+auth_router.post("/logout", ResponseGenerator(Logout));
 
 async function Login(req, res) {
   console.log("entered login");
@@ -55,6 +56,15 @@ async function Register(req) {
     status_code: 201,
     result: { userid: new_user._id },
   };
+}
+
+async function Logout(req, res) {
+  res.clearCookie("auth_token", {
+    httpOnly: true,
+    secure: true,
+    path: "/",
+  });
+  return { status_code: 200, result: { user: req.user } };
 }
 
 export default auth_router;

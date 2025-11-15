@@ -1,4 +1,4 @@
-import { Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import api from "./api/axios";
 import "./Projects.css";
@@ -6,7 +6,6 @@ import "./Projects.css";
 function Options({ tabs }) {
   const [selectedTab, selectTab] = useState(tabs[0]);
   function OptionElement(tab) {
-    console.log(tab, selectedTab, tab.title == selectedTab.title);
     if (tab.title == selectedTab.title) {
       return (
         <h3 onClick={() => selectTab(tab)} className="selectedTabTitle">
@@ -28,8 +27,8 @@ function Options({ tabs }) {
   );
 }
 
-function Greeter({ user, projects }) {
-  const defaultTabs = [
+function Greeter({ user, projects, setUser }) {
+  const tabs = [
     {
       title: "Details",
       component: (
@@ -42,7 +41,7 @@ function Greeter({ user, projects }) {
     {
       title: "Settings",
       component: (
-        <p className="info">
+        <div className="info">
           <div className="options">
             <span>Full Name</span>
             <span>{user.fullname}</span>
@@ -57,6 +56,9 @@ function Greeter({ user, projects }) {
               id="logout"
               className="logoutButton"
               value="Logout"
+              onClick={async () =>
+                await api.post("/auth/logout").then(() => setUser(null))
+              }
             />
             <input
               type="button"
@@ -65,7 +67,7 @@ function Greeter({ user, projects }) {
               value="Delete Account"
             />
           </div>
-        </p>
+        </div>
       ),
     },
   ];
@@ -74,14 +76,87 @@ function Greeter({ user, projects }) {
       <h2 className="welcome">
         Welcome, <span className="username">{user.name.first}</span>
       </h2>
-      <Options tabs={defaultTabs} />
+      <Options tabs={tabs} />
     </div>
   );
 }
 
 function Settings({ project }) {
-  if (!project) return <div className="settings"></div>;
-  return <div className="settings"></div>;
+  const dummy = () => console.log("dummy");
+  const selectProject = (
+    <p className="infoDesc">Please select a project to view details.</p>
+  );
+  const defaultTabs = [
+    {
+      title: "Overview",
+      component:
+        !project || project.length == 0 ? (
+          selectProject
+        ) : (
+          <div className="info">
+            <div className="infoHeader">
+              <h1 className="infoTitle">{project.title}</h1>
+              <p className="infoDesc">{project.desc}</p>
+            </div>
+            <div className="projectOptions">
+              <span>Todo</span>
+              <span>
+                {project.todo.pending.length} pending,{" "}
+                {project.todo.completed.length} completed,{" "}
+                {project.todo.ignored.length} ignored
+              </span>
+              <span>Chat</span>
+              <span>{project.chat.length} messages</span>
+              <span>Posts</span>
+              <span>{project.posts.length} posts</span>
+              <span>Status</span>
+              <span>
+                {project.permissions.view.length} members,{" "}
+                {project.permissions.edit.length} admin
+              </span>
+            </div>
+          </div>
+        ),
+    },
+    {
+      title: "Create",
+      component: (
+        <div className="info">
+          <form className="newprojectOptions" action={dummy}>
+            <input
+              type="text"
+              id="new_title"
+              name="new_title"
+              className="pinputBox"
+              placeholder="Title"
+            />
+            <input
+              type="text"
+              id="new_desc"
+              name="new_desc"
+              className="pinputBox"
+              placeholder="Description"
+            />
+            <input
+              type="submit"
+              id="create"
+              className="pformButton"
+              value="Create"
+            />
+          </form>
+        </div>
+      ),
+    },
+    {
+      title: "Edit",
+      component: <p className="info">Hello, World</p>,
+    },
+  ];
+  return (
+    <div className="settings">
+      <Options tabs={defaultTabs} />
+    </div>
+  );
 }
 
 function SearchBar() {
@@ -128,15 +203,23 @@ function ProjectList({ projects }) {
 function Projects() {
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
-      let result = await api.post("projects/list");
+      let result;
+      try {
+        result = await api.post("users/current");
+        setUser(result.data.user);
+      } catch (err) {
+        console.log(err);
+        navigate("/login");
+      }
+      result = await api.post("projects/list");
       setProjects(result.data.projects);
-      result = await api.post("users/current");
-      setUser(result.data.user);
     };
     fetchData();
-  }, []);
+  }, [navigate, user]);
 
   // Make this better later
   if (!user) {
@@ -146,7 +229,7 @@ function Projects() {
   return (
     <>
       <div className="infocard">
-        <Greeter user={user} projects={projects} />
+        <Greeter user={user} projects={projects} setUser={setUser} />
         <Settings />
         <SearchBar />
         <ProjectList projects={projects} />
