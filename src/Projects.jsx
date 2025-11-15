@@ -6,12 +6,24 @@ import "./Projects.css";
 function Options({ tabs }) {
   const [selectedTab, selectTab] = useState(tabs[0]);
   function OptionElement(tab) {
-    return <h3>{tab.title}</h3>;
+    console.log(tab, selectedTab, tab.title == selectedTab.title);
+    if (tab.title == selectedTab.title) {
+      return (
+        <h3 onClick={() => selectTab(tab)} className="selectedTabTitle">
+          {tab.title}
+        </h3>
+      );
+    }
+    return (
+      <h3 onClick={() => selectTab(tab)} className="tabTitle">
+        {tab.title}
+      </h3>
+    );
   }
   return (
     <div className="tabbox">
       <div className="tabs">{tabs.map(OptionElement)}</div>
-      <div className="tabcontext">{selectedTab.component}</div>
+      <div className="tabcontent">{selectedTab.component}</div>
     </div>
   );
 }
@@ -27,11 +39,40 @@ function Greeter({ user, projects }) {
         </p>
       ),
     },
+    {
+      title: "Settings",
+      component: (
+        <p className="info">
+          <div className="options">
+            <span>Full Name</span>
+            <span>{user.fullname}</span>
+            <span>Username</span>
+            <code>{user.username}</code>
+            <span>Account ID</span>
+            <code>{user._id}</code>
+          </div>
+          <div className="accButtons">
+            <input
+              type="button"
+              id="logout"
+              className="logoutButton"
+              value="Logout"
+            />
+            <input
+              type="button"
+              id="deleteacc"
+              className="delButton"
+              value="Delete Account"
+            />
+          </div>
+        </p>
+      ),
+    },
   ];
   return (
     <div className="greeter">
       <h2 className="welcome">
-        Welcome, <span className="username">{user.fullname}</span>
+        Welcome, <span className="username">{user.name.first}</span>
       </h2>
       <Options tabs={defaultTabs} />
     </div>
@@ -40,21 +81,7 @@ function Greeter({ user, projects }) {
 
 function Settings({ project }) {
   if (!project) return <div className="settings"></div>;
-  return (
-    <div className="settings">
-      <h2 className="project_title">{project.title}</h2>
-      <p className="project_desc">{project.desc}</p>
-      <div className="stats">
-        <p className="todo_desc">
-          {project.todo.pending.length} of{" "}
-          {project.todo.pending.length + project.todo.completed.length} Pending
-          Tasks
-        </p>
-        <p classname="chat_desc">{project.chat.length} Messages</p>
-        <p classname="posts">{project.posts.length} Posts</p>
-      </div>
-    </div>
-  );
+  return <div className="settings"></div>;
 }
 
 function SearchBar() {

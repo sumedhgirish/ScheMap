@@ -4,21 +4,73 @@
   margin: 0;
 }
 
+.tabbox {
+  display: grid;
+  grid-template-rows: 1fr 4fr;
+  gap: 5px;
+  border-radius: 0.5em;
+  border-width: 0px;
+  border-color: transparent;
+  overflow: hidden;
+  padding: 0.2em;
+}
+
+.options {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  margin-bottom: 0.5em;
+}
+
+.accButtons {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  align-items: center;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+.tabcontent {
+  padding: 0em;
+}
+
+.tabTitle {
+  width: 100%;
+  color: var(--rpmuted);
+}
+
+.selectedTabTitle {
+  width: 100%;
+  color: var(--rppine);
+  border-bottom: 3px solid var(--rppine);
+}
+
 .infocard {
   width: 100vw;
   height: 100vh;
   display: grid;
   grid-template-columns: 4fr 6fr;
-  grid-template-rows: 3fr 1fr 7fr;
+  grid-template-rows: 10fr 2fr 14fr;
   padding: 2vh;
   gap: 2vh;
 }
 
 .greeter {
-  padding: 2% 3%;
+  padding: 3% 3%;
   background-color: rgb(from var(--rpoverlay) r g b / 70%);
   border-radius: 1em;
   text-align: left;
+  display: grid;
+  grid-template-rows: 2fr auto;
+  gap: 2%;
 }
 
 .welcome {
@@ -31,6 +83,8 @@
 
 .info {
   font-size: 1em;
+  margin: 0.5em 0;
+  padding: 0 0.5em;
   .numProj {
     color: var(--rppine);
   }
@@ -40,16 +94,6 @@
   background-color: rgb(from var(--rpoverlay) r g b / 70%);
   border-radius: 1em;
   text-align: left;
-}
-
-.project_title {
-  font-size: 2em;
-  color: var(--rpiris);
-}
-
-.project_desc {
-  font-weight: italic;
-  color: rgb(from var(--rptext) r g b / 70%);
 }
 
 .search {
@@ -102,6 +146,25 @@
   border-radius: 0.3em;
   margin-left: 1em;
   margin-top: 1em;
+}
+
+.logoutButton {
+  height: auto;
+  width: 10ch;
+  padding: 0.3em;
+  background-color: var(--rpiris);
+  border-radius: 0.3em;
+  margin-right: 0.5em;
+}
+
+.delButton {
+  height: auto;
+  width: 15ch;
+  padding: 0.3em;
+  background-color: rgb(218, 55, 60);
+  border-color: rgb(218, 55, 60);
+  color: var(--rptext);
+  border-radius: 0.3em;
 }
 
 .projectElement {
