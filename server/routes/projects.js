@@ -29,7 +29,7 @@ async function Create(req) {
     members,
     admins,
   );
-  return { status_code: 201, result: { new_project } };
+  return { status_code: 201, result: { project: new_project } };
 }
 
 async function Edit(req) {
@@ -50,7 +50,7 @@ async function Edit(req) {
     project.metadata.desc = desc;
   }
   await project.save();
-  return { status_code: 200, result: { project } };
+  return { status_code: 200, result: { project: project } };
 }
 
 async function Exit(req) {

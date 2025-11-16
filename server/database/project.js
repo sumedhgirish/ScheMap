@@ -49,8 +49,8 @@ projectSchema.statics.createNew = function (
 
   return this.create({
     metadata: {
-      title,
-      desc,
+      title: title,
+      desc: desc,
       creationDate: new Date(),
     },
     content: {

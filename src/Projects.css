@@ -59,7 +59,7 @@
   width: 100vw;
   height: 100vh;
   display: grid;
-  grid-template-columns: 4fr 6fr;
+  grid-template-columns: 2fr 3fr;
   grid-template-rows: 10fr 2fr 14fr;
   padding: 2vh;
   gap: 2vh;
@@ -108,6 +108,9 @@
     color: var(--rpfoam);
     margin: 0;
     padding: 0;
+    /* overflow: hidden; */
+    white-space: nowrap;
+    /* text-overflow: ellipsis; */
   }
   .infoDesc {
     margin-bottom: 1%;
@@ -123,7 +126,7 @@
   margin-top: 0.5em;
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 7fr;
+  grid-template-columns: 1fr 10fr;
 }
 
 .newprojectOptions {
@@ -134,6 +137,7 @@
   margin-top: 0.5em;
   align-items: end;
   margin-top: 1em;
+  padding: 0em 10%;
 }
 
 .search {
@@ -159,6 +163,7 @@
   overflow: auto;
   display: flex;
   flex-direction: column;
+  padding: 1em 0.5em;
 }
 
 .pinputBox {
@@ -207,11 +212,12 @@
 }
 
 .projectElement {
+  min-height: 4ch;
   background-color: rgb(from var(--rpsubtle) r g b / 20%);
   display: grid;
-  grid-template-columns: 1fr 7fr 4fr;
+  grid-template-columns: 2fr 7fr 4fr;
   text-align: left;
-  border-radius: 1em;
+  border-radius: 0.5em;
   align-items: center;
   justify-content: space-evenly;
   margin: 0.2em;
@@ -221,8 +227,19 @@
   font-size: 1em;
   color: var(--rprose);
   margin-left: 1em;
+  min-width: 10ch;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.projectDesc {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .projectId {
   color: var(--rpmuted);
+  min-width: 25ch;
 }
