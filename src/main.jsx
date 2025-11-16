@@ -7,6 +7,7 @@ import Projects from "./Projects.jsx";
 import Login from "./Login.jsx";
 import Register from "./Register.jsx";
 import About from "./About.jsx";
+import Workspace from "./Workspace.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/about" element={<About />} />
+        <Route path="/workspace/:projectId" element={<Workspace />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

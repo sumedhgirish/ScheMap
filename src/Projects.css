@@ -217,7 +217,7 @@
   min-height: 4ch;
   background-color: rgb(from var(--rpsubtle) r g b / 20%);
   display: grid;
-  grid-template-columns: 2fr 7fr 4fr;
+  grid-template-columns: 2fr 7fr 2fr;
   text-align: left;
   border-radius: 0.5em;
   align-items: center;
@@ -244,4 +244,22 @@
 .projectId {
   color: var(--rpmuted);
   min-width: 25ch;
+}
+
+.link {
+  width: auto;
+  height: 50px;
+  margin: 0px 0.25em 0px 0.25em;
+  align-content: center;
+  color: var(--rpmuted);
+  text-decoration: none;
+}
+
+.link:visited {
+  color: var(--rpmuted);
+}
+
+.link:hover {
+  color: var(--rppine);
+  text-decoration: underline;
 }

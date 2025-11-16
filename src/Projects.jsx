@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { useEffect, useReducer, useState } from "react";
 import api from "./api/axios";
 import "./Projects.css";
@@ -125,7 +125,6 @@ function Greeter({ user, projects, dispatch, navigate }) {
 }
 
 function Settings({ project, dispatch }) {
-  console.log(!project);
   const selectProject = (
     <p className="infoDesc">Please select a project to view details.</p>
   );
@@ -229,7 +228,9 @@ function ProjectElement({ _id, metadata }) {
     <div className="projectElement" key={_id}>
       <h4 className="projectTitle">{metadata.title}</h4>
       <p className="projectDesc">{metadata.desc}</p>
-      <p className="projectId">{_id}</p>
+      <NavLink to={"/workspace/" + _id.toString()} className="link projectId">
+        {_id}
+      </NavLink>
     </div>
   );
 }
@@ -241,7 +242,6 @@ function ProjectList({ projects, dispatch }) {
         <div
           key={p._id}
           onClick={() => {
-            console.log("triggered index change to", i);
             dispatch({ type: "set_index", payload: i });
           }}
         >
