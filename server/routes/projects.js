@@ -6,6 +6,7 @@ import { ResponseGenerator } from "../utils/netutils.js";
 const projects_router = Router();
 projects_router.post("/list", ResponseGenerator(List));
 projects_router.post("/create", ResponseGenerator(Create));
+projects_router.post("/query/:projectid", ResponseGenerator(FindId));
 projects_router.post("/edit/:projectid", ResponseGenerator(Edit));
 projects_router.post("/exit:projectid", ResponseGenerator(Exit));
 projects_router.post("/addUser/:projectid", ResponseGenerator(AddUser));
@@ -30,6 +31,27 @@ async function Create(req) {
     admins,
   );
   return { status_code: 201, result: { project: new_project } };
+}
+
+async function FindId(req) {
+  const project = await Projects.findById(req.params.projectid);
+  if (!project) {
+    return {
+      status_code: 404,
+      result: { error: "Project not found!" },
+    };
+  }
+  const user = req.user;
+  if (!project.permissions.view.includes(user._id)) {
+    return {
+      status_code: 401,
+      result: { error: "User is not authorized to view project!" },
+    };
+  }
+  return {
+    status_code: 200,
+    result: { result: { project: project } },
+  };
 }
 
 async function Edit(req) {
