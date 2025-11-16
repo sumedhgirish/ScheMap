@@ -198,10 +198,6 @@ function Settings({ project, dispatch }) {
         </div>
       ),
     },
-    {
-      title: "Edit",
-      component: <p className="info">Hello, World</p>,
-    },
   ];
 
   return (
