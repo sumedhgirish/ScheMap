@@ -59,7 +59,7 @@
   width: 100vw;
   height: 100vh;
   display: grid;
-  grid-template-columns: 2fr 3fr;
+  grid-template-columns: 4fr 5fr;
   grid-template-rows: 10fr 2fr 14fr;
   padding: 2vh;
   gap: 2vh;
@@ -97,6 +97,8 @@
   border-radius: 1em;
   text-align: left;
   padding: 1em;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .infoHeader {
@@ -154,6 +156,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
+  margin: 0em 1em;
 }
 
 .projectlist {

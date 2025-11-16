@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useEffect, useReducer, useState } from "react";
 import api from "./api/axios";
 import "./Projects.css";
@@ -7,6 +7,7 @@ const initialState = {
   user: null,
   projects: [],
   index: 0,
+  search: "",
 };
 
 function reducer(state, action) {
@@ -22,6 +23,9 @@ function reducer(state, action) {
 
     case "add_project":
       return { ...state, projects: [action.payload, ...state.projects] };
+
+    case "set_search":
+      return { ...state, index: 0, search: action.payload };
 
     case "set_state":
       return action.payload;
@@ -207,14 +211,18 @@ function Settings({ project, dispatch }) {
   );
 }
 
-function SearchBar() {
-  const dummy = () => console.log("dummy");
-
+function SearchBar({ dispatch }) {
   return (
     <div className="search">
-      <form className="searchbox" onSubmit={dummy}>
-        <input type="text" className="pinputBox" placeholder="Title" />
-        <input type="submit" className="pformButton" value="search" />
+      <form className="searchbox" onSubmit={(e) => e.preventDefault()}>
+        <input
+          type="text"
+          className="pinputBox"
+          placeholder="Search by title"
+          onChange={(e) =>
+            dispatch({ type: "set_search", payload: e.target.value })
+          }
+        />
       </form>
     </div>
   );
@@ -261,6 +269,7 @@ function Projects() {
           user: userRes.data.user,
           projects: projRes.data.projects,
           index: 0,
+          search: "",
         };
         dispatch({ type: "set_state", payload: payload });
       } catch (err) {
@@ -272,7 +281,10 @@ function Projects() {
     fetchData();
   }, [navigate]);
 
-  if (!state.user) return <p>Loading...</p>;
+  if (!state.user || !state.projects) return <p>Loading...</p>;
+  const filteredProjects = state.projects.filter((p) =>
+    p.metadata.title.toLowerCase().startsWith(state.search.toLowerCase()),
+  );
   return (
     <div className="infocard">
       <Greeter
@@ -281,9 +293,9 @@ function Projects() {
         dispatch={dispatch}
         navigate={navigate}
       />
-      <Settings project={state.projects[state.index]} dispatch={dispatch} />
-      <SearchBar />
-      <ProjectList projects={state.projects} dispatch={dispatch} />
+      <Settings project={filteredProjects[state.index]} dispatch={dispatch} />
+      <SearchBar dispatch={dispatch} />
+      <ProjectList projects={filteredProjects} dispatch={dispatch} />
     </div>
   );
 }
