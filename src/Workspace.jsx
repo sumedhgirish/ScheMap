@@ -75,8 +75,91 @@ function Todo({ todo, projectId, redraw }) {
   );
 }
 
-function Posts({ posts }) {
-  return <div className="posts card"></div>;
+function Members({ projectId, members }) {
+  const [allUsers, setAllUsers] = useState([]);
+  const [input, setInput] = useState("");
+  const [filtered, setFiltered] = useState([]);
+  const [localMembers, setLocalMembers] = useState(members);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const res = await api.post(`/users/list/${projectId}`);
+      console.log(res.data.users);
+      setAllUsers(res.data.users);
+    };
+    fetchUsers();
+  }, [projectId]);
+
+  useEffect(() => {
+    if (!input.trim()) {
+      setFiltered([]);
+      return;
+    }
+
+    const f = allUsers.filter(
+      (u) =>
+        u.username.toLowerCase().includes(input.toLowerCase()) &&
+        !localMembers.includes(u._id),
+    );
+    setFiltered(f.slice(0, 5)); // max 5 suggestions
+  }, [input, allUsers, localMembers]);
+
+  async function addMember(userid) {
+    await api.post(`/projects/addUser/${projectId}`, { userid });
+    setLocalMembers((prev) => [...prev, userid]);
+    setInput("");
+  }
+
+  return (
+    <div className="members card">
+      <h2 className="membersTitle">Members</h2>
+
+      {/* Search and add user */}
+      <div className="memberAddBox">
+        <input
+          type="text"
+          className="memberInput"
+          placeholder="Add user by name..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+
+        {/* Autocomplete dropdown */}
+        {filtered.length > 0 && (
+          <div className="suggestions">
+            {filtered.map((u) => (
+              <div
+                key={u._id}
+                className="suggestionItem"
+                onClick={() => addMember(u._id)}
+              >
+                {u.username}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Member list */}
+      <div className="memberList">
+        {localMembers.length === 0 ? (
+          <p className="memptyText">No members yet</p>
+        ) : (
+          localMembers.map((m) => {
+            const user = allUsers.find((u) => u._id === m);
+            return (
+              <div key={m} className="memberItem">
+                <div className="memberAvatar">
+                  {user?.username[0]?.toUpperCase() || "?"}
+                </div>
+                <p className="memberName">{user?.username || "(unknown)"}</p>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
 }
 
 function Chat({ chat, projectId, refresh }) {
@@ -134,8 +217,8 @@ function Workspace() {
       setRedraw(false);
     };
     fetchFunc();
-    const refreshChat = setInterval(() => setRedraw(true), 1000 * 1);
-    return () => clearInterval(refreshChat);
+    // const refreshChat = setInterval(() => setRedraw(true), 1000 * 1);
+    // return () => clearInterval(refreshChat);
   }, [projectId, redraw]);
 
   if (!projectId) {
@@ -158,7 +241,7 @@ function Workspace() {
         projectId={projectId}
         refresh={setRedraw}
       />
-      <Posts posts={project.content.posts} />
+      <Members members={project.permissions.view} projectId={projectId} />
     </div>
   );
 }
