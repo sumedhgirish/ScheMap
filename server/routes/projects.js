@@ -12,6 +12,7 @@ projects_router.post("/exit:projectid", ResponseGenerator(Exit));
 projects_router.post("/addUser/:projectid", ResponseGenerator(AddUser));
 projects_router.post("/newTodo/:projectid", ResponseGenerator(AddTodo));
 projects_router.post("/toggleTodo/:projectid", ResponseGenerator(toggleTodo));
+projects_router.post("/chat/:projectid", ResponseGenerator(acceptMessage));
 // projects_router.post("/removeUser/:projectid");
 // projects_router.post("/makeAdmin/:projectid");
 // projects_router.post("/revokeAdmin/:projectid");
@@ -144,6 +145,26 @@ async function toggleTodo(req) {
 
   project.content.todo[index].completed =
     !project.content.todo[index].completed;
+  await project.save();
+  return { status_code: 200, result: { todo: project.content.todo } };
+}
+
+async function acceptMessage(req) {
+  const { message } = req.body;
+  const user = req.user;
+  const project = await Projects.findById(req.params.projectid);
+
+  if (!project.permissions.view.includes(user._id)) {
+    return {
+      status_code: 401,
+      result: { error: "Unauthorized for accessing chat" },
+    };
+  }
+
+  project.content.chat.push({
+    sender: user._id,
+    message: message,
+  });
   await project.save();
   return { status_code: 200, result: { todo: project.content.todo } };
 }

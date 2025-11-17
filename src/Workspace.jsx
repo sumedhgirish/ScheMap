@@ -25,7 +25,6 @@ function Heading({ metadata }) {
 
 function Todo({ todo, projectId, redraw }) {
   function Card({ task, i }) {
-    console.log(task, i);
     return (
       <div key={task.task} className="task">
         <input
@@ -79,8 +78,45 @@ function Todo({ todo, projectId, redraw }) {
 function Posts({ posts }) {
   return <div className="posts card"></div>;
 }
-function Chat({ chat }) {
-  return <div className="chat card"></div>;
+
+function Chat({ chat, projectId, refresh }) {
+  const [message, setMessage] = useState("");
+
+  async function sendMessage() {
+    if (!message.trim()) return;
+    await api.post(`/projects/chat/${projectId}`, { message });
+    setMessage("");
+    refresh(true);
+  }
+
+  return (
+    <div className="chat card">
+      <div className="chatList">
+        {chat.length === 0 ? (
+          <p className="emptyText">Start the conversation...</p>
+        ) : (
+          chat.map((msg, i) => (
+            <div key={i} className="chatMessage">
+              <p className="sender">{msg.sender?.username || "User"}</p>
+              <p className="message">{msg.message}</p>
+            </div>
+          ))
+        )}
+      </div>
+
+      <form className="chatInput" action={sendMessage}>
+        <input
+          type="text"
+          placeholder="Type message..."
+          value={message}
+          name="message"
+          onChange={(e) => setMessage(e.target.value)}
+          className="taskinput"
+        />
+        <input type="submit" className="sendBtn" value="" />
+      </form>
+    </div>
+  );
 }
 
 function Workspace() {
@@ -98,6 +134,8 @@ function Workspace() {
       setRedraw(false);
     };
     fetchFunc();
+    const refreshChat = setInterval(() => setRedraw(true), 1000 * 1);
+    return () => clearInterval(refreshChat);
   }, [projectId, redraw]);
 
   if (!projectId) {
@@ -115,7 +153,11 @@ function Workspace() {
         projectId={projectId}
         redraw={setRedraw}
       />
-      <Chat chat={project.content.chat} />
+      <Chat
+        chat={project.content.chat}
+        projectId={projectId}
+        refresh={setRedraw}
+      />
       <Posts posts={project.content.posts} />
     </div>
   );
