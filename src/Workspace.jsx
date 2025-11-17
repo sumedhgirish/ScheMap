@@ -23,12 +23,59 @@ function Heading({ metadata }) {
   );
 }
 
-function Todo({ todo }) {
-  // has 3 arrays completed, pending, ignored. list all elements in pending above all elements in completed
-  // dont display ignored
-  // each item is simply { task: string, user: userobject with fullname property }
-  return <div className="todo card"></div>;
+function Todo({ todo, projectId, redraw }) {
+  function Card({ task, i }) {
+    console.log(task, i);
+    return (
+      <div key={task.task} className="task">
+        <input
+          type="button"
+          className={task.completed ? "checkBox" : "checkedBox"}
+          onClick={async () => {
+            await api.post(`/projects/toggleTodo/${projectId}`, {
+              index: i,
+            });
+            redraw(true);
+          }}
+        />
+        <h3 className="taskTitle">{task.task}</h3>
+      </div>
+    );
+  }
+
+  const list_items =
+    todo.length === 0 ? (
+      <p className="emptyText">To-Do List is empty</p>
+    ) : (
+      todo.map((task, i) => <Card key={task._id} task={task} i={i} />)
+    );
+
+  return (
+    <div className="todo card">
+      <form
+        className="input"
+        action={async (formdata) => {
+          const response = await api.post(
+            `/projects/newTodo/${projectId}`,
+            formdata,
+          );
+          console.log(response);
+          redraw(true);
+        }}
+      >
+        <input type="submit" className="addTodo" value="" />
+        <input
+          type="text"
+          className="taskinput"
+          placeholder="New Task"
+          name="task"
+        />
+      </form>
+      <div className="list">{list_items}</div>
+    </div>
+  );
 }
+
 function Posts({ posts }) {
   return <div className="posts card"></div>;
 }
@@ -39,13 +86,19 @@ function Chat({ chat }) {
 function Workspace() {
   const { projectId } = useParams();
   const [project, setProject] = useState(null);
+  const [redraw, setRedraw] = useState(true);
+
   useEffect(() => {
     const fetchFunc = async () => {
+      if (!redraw) {
+        return;
+      }
       const response = await api.post("/projects/query/" + projectId, {});
       setProject(response.data.result.project);
+      setRedraw(false);
     };
     fetchFunc();
-  }, [projectId]);
+  }, [projectId, redraw]);
 
   if (!projectId) {
     return <h2>{"We could not find what you were looking for..."}</h2>;
@@ -57,7 +110,11 @@ function Workspace() {
   return (
     <div className="workspace">
       <Heading metadata={project.metadata} />
-      <Todo todo={project.content.todo} />
+      <Todo
+        todo={project.content.todo}
+        projectId={projectId}
+        redraw={setRedraw}
+      />
       <Chat chat={project.content.chat} />
       <Posts posts={project.content.posts} />
     </div>

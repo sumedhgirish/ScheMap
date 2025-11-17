@@ -10,6 +10,8 @@ projects_router.post("/query/:projectid", ResponseGenerator(FindId));
 projects_router.post("/edit/:projectid", ResponseGenerator(Edit));
 projects_router.post("/exit:projectid", ResponseGenerator(Exit));
 projects_router.post("/addUser/:projectid", ResponseGenerator(AddUser));
+projects_router.post("/newTodo/:projectid", ResponseGenerator(AddTodo));
+projects_router.post("/toggleTodo/:projectid", ResponseGenerator(toggleTodo));
 // projects_router.post("/removeUser/:projectid");
 // projects_router.post("/makeAdmin/:projectid");
 // projects_router.post("/revokeAdmin/:projectid");
@@ -109,6 +111,41 @@ async function AddUser(req) {
 
   await project.save();
   return { status_code: 200, result: { project } };
+}
+
+async function AddTodo(req) {
+  const { task } = req.body;
+  const user = req.user;
+  const project = await Projects.findById(req.params.projectid);
+
+  if (!project.permissions.view.includes(user._id)) {
+    return {
+      status_code: 401,
+      result: { error: "Unauthorized for viewing to-do" },
+    };
+  }
+
+  await project.content.todo.push({ task: task, completed: false });
+  await project.save();
+  return { status_code: 200, result: { todo: project.content.todo } };
+}
+
+async function toggleTodo(req) {
+  const { index } = req.body;
+  const user = req.user;
+  const project = await Projects.findById(req.params.projectid);
+
+  if (!project.permissions.view.includes(user._id)) {
+    return {
+      status_code: 401,
+      result: { error: "Unauthorized for toggling todos" },
+    };
+  }
+
+  project.content.todo[index].completed =
+    !project.content.todo[index].completed;
+  await project.save();
+  return { status_code: 200, result: { todo: project.content.todo } };
 }
 
 export default projects_router;

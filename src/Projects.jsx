@@ -142,11 +142,7 @@ function Settings({ project, dispatch }) {
 
           <div className="projectOptions">
             <span>Todo</span>
-            <span>
-              {project.content.todo.pending.length} pending,{" "}
-              {project.content.todo.completed.length} completed,{" "}
-              {project.content.todo.ignored.length} ignored
-            </span>
+            <span>{project.content.todo.length} tasks,</span>
 
             <span>Chat</span>
             <span>{project.content.chat.length} messages</span>
@@ -170,7 +166,8 @@ function Settings({ project, dispatch }) {
           <form
             className="newprojectOptions"
             action={async (e) => {
-              const form = new FormData(e.target);
+              const form = e;
+              console.log(form);
               form.append("members", []);
               form.append("admins", []);
 
@@ -278,9 +275,15 @@ function Projects() {
   }, [navigate]);
 
   if (!state.user || !state.projects) return <p>Loading...</p>;
-  const filteredProjects = state.projects.filter((p) =>
-    p.metadata.title.toLowerCase().startsWith(state.search.toLowerCase()),
-  );
+  const filteredProjects = state.projects.filter((p) => {
+    if (p.metadata.title) {
+      return p.metadata.title
+        .toLowerCase()
+        .startsWith(state.search.toLowerCase());
+    } else {
+      console.log(p);
+    }
+  });
   return (
     <div className="infocard">
       <Greeter

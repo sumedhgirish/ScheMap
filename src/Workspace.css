@@ -47,6 +47,95 @@
 
 .todo {
   grid-row: span 2;
+  padding: 1em;
+  .input {
+    min-height: 5ch;
+    background-color: rgb(from var(--rpsubtle) r g b / 60%);
+    width: 100%;
+    border-radius: 0.5em;
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  .list {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    max-height: 33ch;
+    .emptyText {
+      text-align: left;
+      padding: 1em;
+      color: var(--rpmuted);
+    }
+  }
+}
+
+.addTodo {
+  border: none;
+  border-color: transparent;
+  border-radius: 0.5em;
+  min-width: 3ch;
+  min-height: 3ch;
+  margin: 0em 1em 0em 0.5em;
+  background-color: var(--rpfoam);
+}
+
+.task {
+  background-color: rgb(from var(--rphhigh) r g b / 75%);
+  margin: 0.5em 0em 0em 0em;
+  min-height: 4ch;
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5em;
+  border-radius: 0.5em;
+}
+
+.checkBox {
+  border: none;
+  border-color: transparent;
+  border-radius: 0.5em;
+  min-width: 3ch;
+  min-height: 3ch;
+  margin: 0em 1em 0em 0.5em;
+  background-color: var(--rpmuted);
+}
+
+.checkedBox {
+  border: none;
+  border-color: transparent;
+  border-radius: 0.5em;
+  min-width: 3ch;
+  min-height: 3ch;
+  margin: 0em 1em 0em 0.5em;
+  background-color: var(--rpiris);
+}
+
+.taskTitle {
+  margin-left: 0.15em;
+  font-weight: normal;
+  color: var(--rptext);
+}
+
+.taskinput {
+  width: 100%;
+  border: none;
+  border-bottom: 3px solid var(--rpmuted);
+  font-size: 14px;
+  background: transparent;
+  color: var(--rptext);
+  font-size: 1em;
+  margin-right: 0.5em;
+}
+
+.taskinput:focus {
+  outline: none;
+  border-bottom: 3px solid var(--rpfoam);
 }
 
 .chat {

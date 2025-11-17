@@ -8,11 +8,12 @@ const projectSchema = new Schema({
   },
 
   content: {
-    todo: {
-      completed: [String],
-      pending: [String],
-      ignored: [String],
-    },
+    todo: [
+      {
+        task: String,
+        completed: Boolean,
+      },
+    ],
 
     chat: [
       {
@@ -54,11 +55,7 @@ projectSchema.statics.createNew = function (
       creationDate: new Date(),
     },
     content: {
-      todo: {
-        completed: [],
-        pending: [],
-        ignored: [],
-      },
+      todo: [],
       chat: [],
       posts: [],
     },
